@@ -1,0 +1,16 @@
+store, evtchn, gnttab: 1 reference still
+
+Dispatch
+	FdoDispatch
+		case IRP_MJ_POWER:
+        	status = FdoDispatchPower(Pdo, Irp);
+			device or system power state, wake corresponding thread (e.g. ThreadWake(Fdo->DevicePowerThread);)
+
+FdoDevicePower
+	case IRP_MN_SET_POWER:
+	__FdoSetDevicePower
+		__FdoSetDevicePowerDown/Up
+			FdoD0ToD3
+			*release
+				_FdoD0ToD3
+

@@ -1031,6 +1031,31 @@ FdoDispatch(
         status = FdoDispatchPnp(Fdo, Irp);
         break;
 
+	case IRP_MJ_POWER:
+		Trace("AXA IRP_MJ_POWER\n");
+		status = FdoDispatchDefault(Fdo, Irp);
+		UCHAR MinorFunction = StackLocation->MinorFunction;
+		POWER_STATE_TYPE PowerType = StackLocation->Parameters.Power.Type;
+		DEVICE_POWER_STATE DeviceState = StackLocation->Parameters.Power.State.DeviceState;
+		if (MinorFunction == IRP_MN_SET_POWER) {
+			Trace("AXA IRP_MN_SET_POWER\n");
+			if (PowerType == DevicePowerState) {
+				Trace("AXA DevicePowerState\n");
+			}
+			if (PowerType == SystemPowerState) {
+				Trace("AXA SystemPowerState\n");
+			}
+			//if (DeviceState > __FdoGetDevicePowerState(Fdo)) {
+				Trace("AXA Down...\n");
+				if (DeviceState == PowerDeviceD3) {
+					Trace("AXA Transition!\n");
+					FdoD0ToD3(Fdo);
+				}
+			//}
+
+		}
+		break;
+
     default:
         status = FdoDispatchDefault(Fdo, Irp);
         break;
